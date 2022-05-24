@@ -79,7 +79,7 @@ const fetchMovie = async (movieId) => {
 //You'll need to play with this function in order to add features and enhance the style.
 const renderMovie = (movie) => {
   CONTAINER.innerHTML = `
-    <div class="row ">
+    <div class="row pt-5">
         <div class="col-md-4">
              <img id="movie-backdrop" src=${BACKDROP_BASE_URL + movie.backdrop_path
     }>
@@ -108,6 +108,7 @@ const runActors = async () => {
   const movieCast = await fetch2();
   renderActor2(movieCast);
 };
+runActors();
 
 
 const fetchActors = async () => {
@@ -141,7 +142,7 @@ const renderActors = (actors) => {
         console.log("actor clicked");
       });
 
-      SUBCONTAINER.appendChild(actorDiv);
+      CONTAINER.appendChild(actorDiv);
     }
   });
 };
@@ -152,7 +153,7 @@ const actorDetails = async (actor) => {
   const actorRes = await fetchActor(actor.id);
   renderActor(actorRes);
 
-  // lets try this :
+  // Results of fetch2:
   const movieRes = await fetch2(actor.id);
   // console.log(movieRes.cast)
   renderActor2(movieRes.cast);
@@ -217,19 +218,13 @@ const renderActor2 = (movie) => {
 
 };
 // ---------------------------------------------------------------------------------------------------------------------------
-runActors();
-
 let actorsNavBar = document.getElementById("theActors")
 
 actorsNavBar.addEventListener("click", () => {
   console.log("clicked!");
+  CONTAINER.innerHTML = "";
+  runActors();
 });
-// actorsNavBar.addEventListener("click", async function () {
-
-// });
-
-
-
 
 document.addEventListener("DOMContentLoaded", autorun);
 
