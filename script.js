@@ -33,6 +33,13 @@ const fetchMovies = async () => {
   return res.json();
 };
 
+// fetch actors that played in the movie(credits):
+const fetchMovieActors = async () => {
+  const url = constructUrl(`movie/${movieId}/credits`);
+  const res = await fetch(url);
+  return res.json();
+};
+
 // You'll need to play with this function in order to add features and enhance the style.
 // This function shows all movies.
 const renderMovies = (movies) => {
@@ -104,7 +111,7 @@ const runActors = async () => {
   // console.log("actors", actors);
   renderActors(actors.results);
 
-  //lets try this
+  //this is to render fetch2:
   const movieCast = await fetch2();
   renderActor2(movieCast);
 };
