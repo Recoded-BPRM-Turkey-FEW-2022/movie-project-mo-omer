@@ -43,8 +43,10 @@ const fetchMovieActors = async () => {
 // You'll need to play with this function in order to add features and enhance the style.
 // This function shows all movies.
 const renderMovies = (movies) => {
+  const mainMovieDiv = document.createElement("div"); 
   movies.map((movie) => {
     const movieDiv = document.createElement("div");
+    movieDiv.classList.add("col-md-4", "col-sm-6");
     movieDiv.innerHTML =
       `
       <div class="card m-3" style="width: 20rem;">
@@ -61,7 +63,8 @@ const renderMovies = (movies) => {
     movieDiv.addEventListener("click", () => {
       movieDetails(movie);
     });
-    CONTAINER.appendChild(movieDiv);
+    CONTAINER.appendChild(mainMovieDiv);
+    mainMovieDiv.appendChild(movieDiv);
   });
 };
 
@@ -129,6 +132,8 @@ const fetchActors = async () => {
 
 
 const renderActors = (actors) => {
+  const mainActorDiv = document.createElement("div");
+  mainActorDiv.classList.add("row");
   actors.map((actor) => {
     if (actor.profile_path !== null) {
       const actorDiv = document.createElement("div");
@@ -149,7 +154,8 @@ const renderActors = (actors) => {
         console.log("actor clicked");
       });
 
-      CONTAINER.appendChild(actorDiv);
+      CONTAINER.appendChild(mainActorDiv);
+      mainActorDiv.appendChild(actorDiv);
     }
   });
 };
