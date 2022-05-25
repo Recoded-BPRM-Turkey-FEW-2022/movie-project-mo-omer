@@ -33,17 +33,13 @@ const fetchMovies = async () => {
   return res.json();
 };
 
-// fetch actors that played in the movie(credits):
-const fetchMovieActors = async () => {
-  const url = constructUrl(`movie/${movieId}/credits`);
-  const res = await fetch(url);
-  return res.json();
-};
+
 
 // You'll need to play with this function in order to add features and enhance the style.
 // This function shows all movies.
 const renderMovies = (movies) => {
-  const mainMovieDiv = document.createElement("div"); 
+  const mainMovieDiv = document.createElement("div");
+  mainMovieDiv.classList.add("row");
   movies.map((movie) => {
     const movieDiv = document.createElement("div");
     movieDiv.classList.add("col-md-4", "col-sm-6");
@@ -61,7 +57,7 @@ const renderMovies = (movies) => {
 
 
     movieDiv.addEventListener("click", () => {
-      movieDetails(movie);
+      runMovieDetails(movie);
     });
     CONTAINER.appendChild(mainMovieDiv);
     mainMovieDiv.appendChild(movieDiv);
@@ -70,10 +66,18 @@ const renderMovies = (movies) => {
 
 
 // You may need to add to this function, definitely don't delete it.
-const movieDetails = async (movie) => {
+const runMovieDetails = async (movie) => {
   const movieRes = await fetchMovie(movie.id);
-
   renderMovie(movieRes);
+
+  const castRes = await fetchMovieActors(movie.id);
+  // console.log(castRes.cast);
+  renderMovieActors(castRes.cast);
+
+  // Results of fetch3(videos):
+  const videoRes = await fetch3(movie.id)
+  console.log(videoRes.results);
+  renderVideos(videoRes.results);
 };
 
 
@@ -85,8 +89,55 @@ const fetchMovie = async (movieId) => {
 };
 
 
+// fetch actors that played in the movie(credits):
+const fetchMovieActors = async (movieId) => {
+  const url = constructUrl(`movie/${movieId}/credits`);
+  const res = await fetch(url);
+  return res.json();
+};
 
-//You'll need to play with this function in order to add features and enhance the style.
+// fethces videos of a movie:
+const fetch3 = async (movieId) => {
+  const url = constructUrl(`/movie/${movieId}/videos`);
+  const res = await fetch(url);
+  return res.json();
+}
+
+
+// renders videos of a movie:
+const renderVideos = (movie) => {
+
+  movie.map(element => {
+    if (element.type === "Trailer") {
+      CONTAINER.innerHTML += `
+        <div>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/${element.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+        </div>
+        <div>hello</div>
+  `;
+    }
+  })
+}
+
+
+
+// renders actors starring in a movie
+const renderMovieActors = (actor) => {
+  actor.map(element => {
+    CONTAINER.innerHTML += `
+    <div class="pt-5 row ">
+        <div class="col-md-4">
+             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
+             <h4><span>${element.name}</span></h4>
+        </div>
+    </div>
+    `;
+  })
+}
+
+
+
+// renders main movies page
 const renderMovie = (movie) => {
   CONTAINER.innerHTML = `
     <div class="row pt-5">
@@ -108,7 +159,10 @@ const renderMovie = (movie) => {
     </div>`;
 };
 
+
+
 // ----------------------------------- creating functions that fetch and display actors --------------------------------------------
+// runs main page for actors: 
 const runActors = async () => {
   const actors = await fetchActors();
   // console.log("actors", actors);
@@ -117,10 +171,12 @@ const runActors = async () => {
   //this is to render fetch2:
   const movieCast = await fetch2();
   renderActor2(movieCast);
+
+
 };
 runActors();
 
-
+// fetch main page actors:
 const fetchActors = async () => {
   const url = constructUrl(`person/popular`);
   const res = await fetch(url);
@@ -130,13 +186,14 @@ const fetchActors = async () => {
 
 
 
-
+// render main page actors:
 const renderActors = (actors) => {
   const mainActorDiv = document.createElement("div");
   mainActorDiv.classList.add("row");
   actors.map((actor) => {
     if (actor.profile_path !== null) {
       const actorDiv = document.createElement("div");
+      actorDiv.classList.add("col-md-4", "col-sm-6");
       actorDiv.innerHTML =
         `
     <div class="card m-3" style="width: 15rem;">
@@ -150,7 +207,7 @@ const renderActors = (actors) => {
 
 
       actorDiv.addEventListener("click", () => {
-        actorDetails(actor);
+        runActorDetails(actor);
         console.log("actor clicked");
       });
 
@@ -161,35 +218,35 @@ const renderActors = (actors) => {
 };
 
 
-
-const actorDetails = async (actor) => {
-  const actorRes = await fetchActor(actor.id);
+// runs single actor details:
+const runActorDetails = async (obj) => {
+  const actorRes = await fetchActor(obj.id);
   renderActor(actorRes);
 
   // Results of fetch2:
-  const movieRes = await fetch2(actor.id);
+  const movieRes = await fetch2(obj.id);
   // console.log(movieRes.cast)
   renderActor2(movieRes.cast);
+
 };
 
-
+// fetch single actor details:
 const fetchActor = async (actorId) => {
   const url = constructUrl(`person/${actorId}`);
-  // const url2 = constructUrl(`/person/${actorId}/movie_credits`);
-
   const res = await fetch(url);
   return res.json(); //return renderActor(res.json()); 
 };
 
 // fetches the movies an actor has been in:
 const fetch2 = async (actorId) => {
-  const url2 = constructUrl(`/person/${actorId}/movie_credits`);
-  const res2 = await fetch(url2);
-  return res2.json();
+  const url = constructUrl(`/person/${actorId}/movie_credits`);
+  const res = await fetch(url);
+  return res.json();
 }
 
 
 
+// renders single actor details:
 const renderActor = (actor) => {
   CONTAINER.innerHTML = `
     <div class="pt-5 row ">
@@ -217,14 +274,15 @@ const renderActor = (actor) => {
 
 }
 
+// renders movies an actor played in :
 const renderActor2 = (movie) => {
   movie.map(element => {
-    console.log(element)
+    // console.log(element)
     CONTAINER.innerHTML += `
     <div class="pt-5 row ">
         <div class="col-md-4">
-             <img style="max-width: 60%; height: auto;" id="movie-backdrop" src=${PROFILE_BASE_URL + element.poster_path}>
-             <h4 id="actor-name"><span>${element.original_title}</span></h4>
+             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
+             <h4><span>${element.original_title}</span></h4>
         </div>
     </div>`
   })
