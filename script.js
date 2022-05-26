@@ -4,10 +4,10 @@
 // const sth = 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc/api_key=5719839582dcc37299e0c1f45ae45110'
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const PROFILE_BASE_URL = "http://image.tmdb.org/t/p/w500";
-const BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w780";
+const PROFILE_BASE_URL = "http://image.tmdb.org/t/p/w780";
+const BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w1280";
 const CONTAINER = document.querySelector(".container");
-const SUBCONTAINER = document.querySelector(".subcontainer");
+// const SUBCONTAINER = document.querySelector(".subcontainer");
 
 
 // Don't touch this function please
@@ -17,7 +17,6 @@ const constructUrl = (path) => {
 };
 
 //-----------------------------------------------------------------------------------------------------------------
-// Don't touch this function please
 // This function fetches movies and renders them (using 2 functions below)
 const autorun = async () => {
   const movies = await fetchMovies();
@@ -26,18 +25,22 @@ const autorun = async () => {
   // console.log(movies.results);
 };
 
-// This function is to fetch movies. You may need to add it or change some part in it in order to apply some of the features.
+
+
+// This function is to fetch movies.
 const fetchMovies = async () => {
   const url = constructUrl(`movie/now_playing`);
+
   const res = await fetch(url);
   return res.json();
 };
 
 
 
-// You'll need to play with this function in order to add features and enhance the style.
+
 // This function shows all movies.
 const renderMovies = (movies) => {
+  CONTAINER.innerHTML = "";
   const mainMovieDiv = document.createElement("div");
   mainMovieDiv.classList.add("row");
   movies.map((movie) => {
@@ -46,7 +49,7 @@ const renderMovies = (movies) => {
     movieDiv.innerHTML =
       `
       <div class="card m-3" style="width: 20rem;">
-        <img src="${BACKDROP_BASE_URL + movie.backdrop_path}" alt="${movie.title} poster">
+        <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
           <div class="card-body">
             <h5 class="card-title">${movie.title}</h5>
             <p class="card-text">${movie.overview}</p>
@@ -71,14 +74,30 @@ const runMovieDetails = async (movie) => {
   renderMovie(movieRes);
 
   const castRes = await fetchMovieActors(movie.id);
-  // console.log(castRes.cast);
+  // console.log(castRes);
   renderMovieActors(castRes.cast);
 
   // Results of fetch3(videos):
   const videoRes = await fetch3(movie.id)
-  console.log(videoRes.results);
+  // console.log(videoRes.results);
   renderVideos(videoRes.results);
+
+  // Results of fetchProductionCo:
+  const productionRes = await fetchProductionCo(movie.id);
+  // console.log(productionRes.production_companies);
+  renderProdctionCp(productionRes.production_companies);
+
+  // Results of fetchSimilarMovies:
+  const similarRes = await fetchSimilarMovies(movie.id);
+  // console.log(similarRes.results);
+  renderSimilarMovies(similarRes.results);
+
+
 };
+
+
+
+
 
 
 // This function is to fetch one movie. Don't touch this function please. 
@@ -96,7 +115,7 @@ const fetchMovieActors = async (movieId) => {
   return res.json();
 };
 
-// fethces videos of a movie:
+// fethces videos/trailer of a movie:
 const fetch3 = async (movieId) => {
   const url = constructUrl(`/movie/${movieId}/videos`);
   const res = await fetch(url);
@@ -104,16 +123,33 @@ const fetch3 = async (movieId) => {
 }
 
 
-// renders videos of a movie:
-const renderVideos = (movie) => {
+// fetches similar movies:
+const fetchSimilarMovies = async (movieId) => {
+  const url = constructUrl(`/movie/${movieId}/similar`);
+  const res = await fetch(url);
+  return res.json();
+}
 
+
+// fetches production companies of a movie
+const fetchProductionCo = async (movieId) => {
+  const url = constructUrl(`movie/${movieId}`);
+  const res = await fetch(url);
+  return res.json();
+};
+
+
+// from fetch3 (called it render3): renders trailer of a movie.
+const renderVideos = (movie) => {
+  CONTAINER.innerHTML += `<br><h3>Trailer: <br></h3>`;
+  let i = 0;
   movie.map(element => {
-    if (element.type === "Trailer") {
+    if (element.type === "Trailer" & i < 1) {
+      i++;
       CONTAINER.innerHTML += `
         <div>
           <iframe width="560" height="315" src="https://www.youtube.com/embed/${element.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
         </div>
-        <div>hello</div>
   `;
     }
   })
@@ -123,7 +159,8 @@ const renderVideos = (movie) => {
 
 // renders actors starring in a movie
 const renderMovieActors = (actor) => {
-  actor.map(element => {
+
+  actor.slice(0, 5).map(element => {
     CONTAINER.innerHTML += `
     <div class="pt-5 row ">
         <div class="col-md-4">
@@ -135,12 +172,43 @@ const renderMovieActors = (actor) => {
   })
 }
 
+//render similar movies:
+const renderSimilarMovies = (movie) => {
+  CONTAINER.innerHTML += `<br><h3>Similar Movies: <br></h3>`;
+
+  movie.slice(0, 5).map(element => {
+    CONTAINER.innerHTML += `
+    <div class="pt-5 row ">
+        <div class="col-md-4">
+             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
+             <h4><span>${element.title}</span></h4>
+        </div>
+    </div>
+    `;
+  })
+}
 
 
-// renders main movies page
+// renders production companies of a movie:
+const renderProdctionCp = (movie) => {
+  CONTAINER.innerHTML += `<br><h3>Production Companies: <br></h3>`;
+
+  movie.slice(0, 5).map(element => {
+    CONTAINER.innerHTML += `
+    <div class="pt-5 row ">
+        <div class="col-md-4">
+             <h4><span>${element.name}</span></h4>
+        </div>
+    </div>
+    `;
+  })
+}
+
+
+// renders the main movies page
 const renderMovie = (movie) => {
   CONTAINER.innerHTML = `
-    <div class="row pt-5">
+    <div class=" row pt-5">
         <div class="col-md-4">
              <img id="movie-backdrop" src=${BACKDROP_BASE_URL + movie.backdrop_path
     }>
@@ -168,13 +236,13 @@ const runActors = async () => {
   // console.log("actors", actors);
   renderActors(actors.results);
 
+  // delete this
   //this is to render fetch2:
-  const movieCast = await fetch2();
-  renderActor2(movieCast);
-
+  // const movieCast = await fetch2();
+  // renderActor2(movieCast);
 
 };
-runActors();
+
 
 // fetch main page actors:
 const fetchActors = async () => {
@@ -186,7 +254,7 @@ const fetchActors = async () => {
 
 
 
-// render main page actors:
+// render main page of actors:
 const renderActors = (actors) => {
   const mainActorDiv = document.createElement("div");
   mainActorDiv.classList.add("row");
@@ -208,7 +276,7 @@ const renderActors = (actors) => {
 
       actorDiv.addEventListener("click", () => {
         runActorDetails(actor);
-        console.log("actor clicked");
+        // console.log("actor clicked");
       });
 
       CONTAINER.appendChild(mainActorDiv);
@@ -230,12 +298,14 @@ const runActorDetails = async (obj) => {
 
 };
 
+
 // fetch single actor details:
 const fetchActor = async (actorId) => {
   const url = constructUrl(`person/${actorId}`);
   const res = await fetch(url);
-  return res.json(); //return renderActor(res.json()); 
+  return res.json();
 };
+
 
 // fetches the movies an actor has been in:
 const fetch2 = async (actorId) => {
@@ -264,9 +334,6 @@ const renderActor = (actor) => {
           <h4>Biography:</h4>
            <h5 id="biography" style="color:#BDBDBD; font-size: .8rem;">${actor.biography}</h5>
         </div>
-        <div><br>
-        <h4>Related Movies:</h4>
-        </div>
     </div>`
   if (actor.gender === 2) {
     document.getElementById("gender").innerText = "Male";
@@ -274,9 +341,12 @@ const renderActor = (actor) => {
 
 }
 
+
 // renders movies an actor played in :
 const renderActor2 = (movie) => {
-  movie.map(element => {
+  CONTAINER.innerHTML += `<br><h3>Related Movies: <br></h3>`;
+
+  movie.slice(0, 8).map(element => {
     // console.log(element)
     CONTAINER.innerHTML += `
     <div class="pt-5 row ">
@@ -288,19 +358,85 @@ const renderActor2 = (movie) => {
   })
 
 };
-// ---------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------ Event Listeners ------------------------------------------------------------
+
+
+
 let actorsNavBar = document.getElementById("theActors")
 
 actorsNavBar.addEventListener("click", () => {
-  console.log("clicked!");
+  // console.log("clicked!");
   CONTAINER.innerHTML = "";
   runActors();
 });
 
+
+
+
+// event listener for popular movies:
+document.getElementById("popularity").addEventListener("click", async () => {
+
+  const fetcher = async () => {
+    const res = await fetch(constructUrl(`movie/popular`));
+    return res.json();
+  };
+  const movies = await fetcher();
+  renderMovies(movies.results);
+  // console.log("popular");
+})
+
+// event listener for top rated:
+document.getElementById("top_rated").addEventListener("click", async () => {
+  const fetcher = async () => {
+    const res = await fetch(constructUrl(`movie/top_rated`));
+    return res.json();
+  };
+  const movies = await fetcher();
+  renderMovies(movies.results);
+  // console.log("top rated");
+})
+
+
+// event listener for now_playing :
+document.getElementById("now_playing").addEventListener("click", async () => {
+  const fetcher = async () => {
+    const res = await fetch(constructUrl(`movie/now_playing`));
+    return res.json();
+  };
+  const movies = await fetcher();
+  renderMovies(movies.results);
+  // console.log("nowplaying");
+})
+
+
+// event listener for upcoming :
+document.getElementById("up_coming").addEventListener("click", async () => {
+  const fetcher = async () => {
+    const res = await fetch(constructUrl(`movie/upcoming`));
+    return res.json();
+  };
+  const movies = await fetcher();
+  renderMovies(movies.results);
+  // console.log("upcoming");
+})
+
+
+// event listener for release date :
+document.getElementById("release_date").addEventListener("click", async () => {
+  const fetcher = async () => {
+
+    const res = await fetch(`${constructUrl('discover/movie')}&sort_by=release_date.desc`);
+    // console.log(res.json());
+    return res.json();
+  };
+  const movies = await fetcher();
+  renderMovies(movies.results);
+  console.log(movies.results);
+})
+
 document.addEventListener("DOMContentLoaded", autorun);
 
-
-
+// runActors();
 // 1- decide what data you want to fetch, and create a function that fetches it.
 // 2- decide how you want to display it, and create a function that renders it.
 // 3- use the already built constructUrl function to fetch the data.
