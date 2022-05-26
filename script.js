@@ -7,7 +7,6 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const PROFILE_BASE_URL = "http://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w780";
 const CONTAINER = document.querySelector(".container");
-const SUBCONTAINER = document.querySelector(".subcontainer"); //WE DONT NEED THIS ANYMORE
 
 // Don't touch this function please
 //give any path and it will return the full URL:
@@ -24,6 +23,22 @@ const autorun = async () => {
   renderMovies(movies.results);
   // console.log(movies.results);
 };
+
+// Home button, takes you to moviesRender page
+const homeBtn = document.getElementById("home");
+const backToHome = () => {
+  CONTAINER.innerHTML = '';
+  autorun();
+};
+homeBtn.addEventListener("click", backToHome);
+
+// Logo button, takes you to moviesRender page
+const logo = document.getElementById("logo");
+const logoToHome = () => {
+  CONTAINER.innerHTML = '';
+  autorun();
+};
+logo.addEventListener("click", logoToHome);
 
 // This function is to fetch movies. You may need to add it or change some part in it in order to apply some of the features.
 const fetchMovies = async () => {
@@ -51,16 +66,19 @@ const renderMovies = (movies) => {
     movieDiv.innerHTML =
       `
       <div class="card m-3" style="width: 20rem;">
-        <img src="${BACKDROP_BASE_URL + movie.backdrop_path}" alt="${movie.title} poster">
+        <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
           <div class="card-body">
-            <h5 class="card-title">${movie.title}</h5>
+            <div class="d-flex justify-content-between">
+             <h5 class="card-title">${movie.title}</h5>
+             <h5 class="card-title">${movie.vote_average}</h5>
+            </div>
             <p class="card-text">${movie.overview}</p>
             <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
           </div>
       </div>
       `;
 
-
+    console.log(movie);
     movieDiv.addEventListener("click", () => {
       movieDetails(movie);
     });
@@ -201,7 +219,6 @@ const genres =  [
 ]
 
 const tagsEl = document.getElementById("tags");
-// setGenre(); // CALLING THE FUNCTION HERE LIKE IN THE VIDEO MESSES UP EVERYTHING. SEE autorun FUNCTION
 let selectedGenre = []; // WILL STORE ALL THE CLICKED GENRES. SEE EVENT LISTENER BELOW
 const setGenre = () => {
     genres.forEach( genre => { // LOOP OVER THE ARRAY
@@ -385,18 +402,15 @@ const renderActor2 = (movie) => {
   })
 
 };
-// ---------------------------------------------------------------------------------------------------------------------------
+
 let actorsNavBar = document.getElementById("theActors")
 
 actorsNavBar.addEventListener("click", () => {
-  console.log("clicked!");
   CONTAINER.innerHTML = "";
   runActors();
 });
 
 document.addEventListener("DOMContentLoaded", autorun);
-
-
 
 // 1- decide what data you want to fetch, and create a function that fetches it.
 // 2- decide how you want to display it, and create a function that renders it.
@@ -405,3 +419,29 @@ document.addEventListener("DOMContentLoaded", autorun);
 
 // Extra :
 // 1- add a rating color for each movie
+
+
+// ---------------------About us page ---------------------------
+
+const aboutUsBtn = document.getElementById("about-us");
+
+const renderAboutUs = () => {
+  CONTAINER.innerHTML = `
+  <div class="pt-5 row ">
+      <div class="col-md-4">
+           <img id="movie-backdrop" src="./aboutUs.jpg">
+      </div>
+      <div class="col-lg-8 col-md-12 col-sm-12">
+        <h2 id="actor-name"><span>About Us</span></h2>
+        <p>Find everything about your favorite movies, discover new titles through advanced filtering, and more. Powered by The Movie Database, Momerflix is here to help you quickly find your next watch.</p>
+      </div>
+  </div>`
+}
+
+aboutUsBtn.addEventListener("click", () => {
+  CONTAINER.innerHTML = "";
+  renderAboutUs();
+});
+
+
+
