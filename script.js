@@ -7,10 +7,89 @@ const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 const PROFILE_BASE_URL = "http://image.tmdb.org/t/p/w780";
 const BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w780";
 const CONTAINER = document.querySelector(".container");
-
 const SEARCH_URL = TMDB_BASE_URL + "/search/movie?" + API_KEY;
 const form = document.getElementById("form");
 const submit = document.getElementById("submit");
+
+const genres =  [
+  {
+    "id": 28,
+    "name": "Action"
+  },
+  {
+    "id": 12,
+    "name": "Adventure"
+  },
+  {
+    "id": 16,
+    "name": "Animation"
+  },
+  {
+    "id": 35,
+    "name": "Comedy"
+  },
+  {
+    "id": 80,
+    "name": "Crime"
+  },
+  {
+    "id": 99,
+    "name": "Documentary"
+  },
+  {
+    "id": 18,
+    "name": "Drama"
+  },
+  {
+    "id": 10751,
+    "name": "Family"
+  },
+  {
+    "id": 14,
+    "name": "Fantasy"
+  },
+  {
+    "id": 36,
+    "name": "History"
+  },
+  {
+    "id": 27,
+    "name": "Horror"
+  },
+  {
+    "id": 10402,
+    "name": "Music"
+  },
+  {
+    "id": 9648,
+    "name": "Mystery"
+  },
+  {
+    "id": 10749,
+    "name": "Romance"
+  },
+  {
+    "id": 878,
+    "name": "Science Fiction"
+  },
+  {
+    "id": 10770,
+    "name": "TV Movie"
+  },
+  {
+    "id": 53,
+    "name": "Thriller"
+  },
+  {
+    "id": 10752,
+    "name": "War"
+  },
+  {
+    "id": 37,
+    "name": "Western"
+  }
+]
+
 
 
 //give any path and it will return the full URL:
@@ -24,7 +103,7 @@ const autorun = async () => {
   const movies = await fetchMovies();
   // console.log(movies)
   renderMovies(movies.results);
-  // console.log(movies.results);
+  console.log(movies.results);
 };
 
 
@@ -51,16 +130,6 @@ const fetchMovies = async () => {
   return res.json();
 };
 
-// // fetch actors that played in the movie(credits):
-// const fetchMovieActors = async () => {
-//   const url = constructUrl(`movie/${movieId}/credits`);
-// >>>>>>> main
-//   const res = await fetch(url);
-//   return res.json();
-// };
-
-
-
 
 // This function shows all movies.
 const renderMovies = (movies) => {
@@ -70,12 +139,21 @@ const renderMovies = (movies) => {
   const mainMovieDiv = document.createElement("div");
   mainMovieDiv.classList.add("row");
   movies.map((movie) => {
+    movie.genre_ids.slice(0, 1).map((genre) => {
+      const genreName = genres.find(g => g.id === genre);
+      movie.genre = genreName.name;
+    })
+    const movieDiv = document.createElement("div");
+    movieDiv.classList.add("col-md-4", "col-sm-6");
+    movieDiv.innerHTML =
+      `
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
       movieDiv.classList.add("col-md-4", "col-sm-6");
       movieDiv.innerHTML =
         `
       <div class="card m-3" style="width: 20rem;">
+        <h5 class="card-title genre">${movie.genre}</h5>
         <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -88,6 +166,7 @@ const renderMovies = (movies) => {
       </div>
       `;
 
+
       // console.log(movie);
       movieDiv.addEventListener("click", () => {
         runMovieDetails(movie);
@@ -99,11 +178,11 @@ const renderMovies = (movies) => {
 };
 
 
-// You may need to add to this function, definitely don't delete it.
 const runMovieDetails = async (movie) => {
   const movieRes = await fetchMovie(movie.id);
   // console.log(movieRes);
   renderMovie(movieRes);
+  console.log(movieRes);
 
   const castRes = await fetchMovieActors(movie.id);
   // console.log(castRes);
@@ -191,19 +270,19 @@ const renderVideos = (movie) => {
 
 // renders actors starring in a movie
 const renderMovieActors = (actor) => {
-
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
   actor.slice(0, 5).map(element => {
     if (element.profile_path !== null) {
-      CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
-             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
-             <h4><span>${element.name}</span></h4>
-        </div>
-    </div>
+    SUBCONTAINER.innerHTML += `
+      <div class="pe-3 col-md-4">
+             <img style="width: 10rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
+             <h4>${element.name}</h4>
+      </div>
     `;
     }
   })
+  CONTAINER.appendChild(SUBCONTAINER);
 }
 
 //render similar movies:
@@ -241,8 +320,12 @@ const renderProdctionCp = (movie) => {
 }
 
 
-// renders the main movies page
+
 const renderMovie = (movie) => {
+  const arrOfGenres = [];
+  movie.genres.map(element => {
+    arrOfGenres.push(element.name);
+  })
   CONTAINER.innerHTML = `
     <div class=" row pt-5">
         <div class="col-md-4">
@@ -250,6 +333,7 @@ const renderMovie = (movie) => {
         </div>
         <div class="col-md-8 ">
             <h2 id="movie-title">${movie.title}</h2>
+            <h4>${arrOfGenres.join(', ')}</h4>
             <p id="movie-release-date"><b>Release Date:</b> ${movie.release_date}</p>
             <p id="movie-runtime"><b>Runtime:</b> ${movie.runtime} Minutes</p> 
             <p id="movie-runtime"><b>Language:</b> ${movie.spoken_languages[0].english_name}</p>
@@ -261,7 +345,7 @@ const renderMovie = (movie) => {
         </div>
         </div>
             <h3>Actors:</h3>
-            <ul id="actors" class="list-unstyled"></ul>
+            
     </div>`;
 };
 // ------------------------------------------------- GENRE FUNCTIONS --------------------------------------------------------------//
@@ -276,86 +360,6 @@ const fetchMoviesByGenre = async () => {
   const json = await res.json();
   return json;
 };
-
-const genres = [
-  {
-    "id": 28,
-    "name": "Action"
-  },
-  {
-    "id": 12,
-    "name": "Adventure"
-  },
-  {
-    "id": 16,
-    "name": "Animation"
-  },
-  {
-    "id": 35,
-    "name": "Comedy"
-  },
-  {
-    "id": 80,
-    "name": "Crime"
-  },
-  {
-    "id": 99,
-    "name": "Documentary"
-  },
-  {
-    "id": 18,
-    "name": "Drama"
-  },
-  {
-    "id": 10751,
-    "name": "Family"
-  },
-  {
-    "id": 14,
-    "name": "Fantasy"
-  },
-  {
-    "id": 36,
-    "name": "History"
-  },
-  {
-    "id": 27,
-    "name": "Horror"
-  },
-  {
-    "id": 10402,
-    "name": "Music"
-  },
-  {
-    "id": 9648,
-    "name": "Mystery"
-  },
-  {
-    "id": 10749,
-    "name": "Romance"
-  },
-  {
-    "id": 878,
-    "name": "Science Fiction"
-  },
-  {
-    "id": 10770,
-    "name": "TV Movie"
-  },
-  {
-    "id": 53,
-    "name": "Thriller"
-  },
-  {
-    "id": 10752,
-    "name": "War"
-  },
-  {
-    "id": 37,
-    "name": "Western"
-  }
-]
-
 
 const tagsEl = document.getElementById("tags");
 let selectedGenre = []; // WILL STORE ALL THE CLICKED GENRES. SEE EVENT LISTENER BELOW
