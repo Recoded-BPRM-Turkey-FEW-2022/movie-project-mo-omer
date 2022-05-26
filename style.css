@@ -13,3 +13,39 @@
 #logo {
     cursor: pointer;
 }
+
+.card.m-3 {
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.card-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: cadetblue;
+    padding: 1rem;
+    max-height: 100%;
+    transform: translateY(101%);
+    transition: transform 0.5s ease-in-out;
+}
+
+.card.m-3:hover .card-text {
+    transform: translateY(0);
+}
+
+.card-title.genre {
+    position: absolute;
+    background-color: cadetblue;
+    max-height: 100%;
+    min-width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+    transform: translateY(-101%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card.m-3:hover .card-title.genre {
+    transform: translateY(0);
+}
