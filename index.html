@@ -12,12 +12,11 @@
 
 <body>
 
-
     <!-- -----------------------adding the navbar-------------------------- -->
     <nav style="background-color: yellow" class="fixed-top navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
             <img src="https://banner2.cleanpng.com/20190730/shy/kisspng-photographic-film-movie-camera-cinema-website-and-mobile-application-development-service-5d3fc924ce3b33.8538265315644613488447.jpg"
-                class="navbar-brand" width="70" height="50" href="#">
+                id="logo" class="navbar-brand" width="70" height="50" href="#">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -26,7 +25,7 @@
             <div class="flex justify-content-center collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" id="home" aria-current="page" href="#">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link theActors" id="theActors" href="#">Actors</a>
@@ -37,23 +36,8 @@
                             Genres
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Adventure</a></li>
-                            <li><a class="dropdown-item" href="#">Animation</a></li>
-                            <li><a class="dropdown-item" href="#">Comedy</a></li>
-                            <li><a class="dropdown-item" href="#">Crime</a></li>
-                            <li><a class="dropdown-item" href="#">Documentary</a></li>
-                            <li><a class="dropdown-item" href="#">Drama</a></li>
-                            <li><a class="dropdown-item" href="#">Family</a></li>
-                            <li><a class="dropdown-item" href="#">Fantasy</a></li>
-                            <li><a class="dropdown-item" href="#">History</a></li>
-                            <li><a class="dropdown-item" href="#">Horror</a></li>
-                            <li><a class="dropdown-item" href="#">Music</a></li>
-                            <li><a class="dropdown-item" href="#">Mystery</a></li>
-                            <li><a class="dropdown-item" href="#">Romance</a></li>
-                            <li><a class="dropdown-item" href="#">Sci-Fi</a></li>
-                            <li><a class="dropdown-item" href="#">War</a></li>
-                            <li><a class="dropdown-item" href="#">Thriller</a></li>
+                            <div id="tags">
+                            </div>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -71,6 +55,9 @@
 
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a id="about-us" class="nav-link" href="#">About us</a>
+                      </li>            
                 </ul>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -80,11 +67,18 @@
         </div>
     </nav>
 
-    <!-- -----------------------the default container-------------------------- -->
-    <div class="container">
+
+    <!-- ------------------the default container-------------------- -->
+    <div class="container  ">
     </div>
-
-
+    <!--------------------- footer ------------------------------------>
+    <footer class="mastfoot mt-auto" >
+        <div class="inner"  style="text-align:center; color:black;">
+          <p>Created with haste by <a href="https://github.com/moalsaleh95" style="color:red; text-decoration: none;"> <img src="./github.png" alt="Logo" width="25"> Mo </a> and <a
+              href="https://github.com/omerfarukatas" style="color:red; text-decoration: none;"> <img src="./github.png" alt="Logo" width="25"> OFA </a></p>
+        </div>
+      </footer>    
+    <!-- -----------------------scripts----------------------------- -->
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
