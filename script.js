@@ -143,15 +143,11 @@ const renderMovies = (movies) => {
       const genreName = genres.find(g => g.id === genre);
       movie.genre = genreName.name;
     })
-    const movieDiv = document.createElement("div");
-    movieDiv.classList.add("col-md-4", "col-sm-6");
-    movieDiv.innerHTML =
-      `
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
       movieDiv.classList.add("col-md-4", "col-sm-6");
       movieDiv.innerHTML =
-        `
+      `
       <div class="card m-3" style="width: 20rem;">
         <h5 class="card-title genre">${movie.genre}</h5>
         <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
