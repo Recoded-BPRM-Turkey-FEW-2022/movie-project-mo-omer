@@ -155,7 +155,7 @@ const renderMovies = (movies) => {
           <div class="card-body text-bg-dark">
             <div class="d-flex justify-content-between">
              <h5 class="card-title title">${movie.title}</h5>
-             <h5 class="card-title rating">${movie.vote_average}</h5>
+             <h5 class="card-title rating" style="color: ${getColor(movie.vote_average)}">${movie.vote_average}</h5>
             </div>
             <p class="card-text">${movie.overview}</p>
           </div>
@@ -172,6 +172,16 @@ const renderMovies = (movies) => {
     }
   });
 };
+
+function getColor(vote) {
+  if(vote>= 8){
+      return 'greenyellow'
+  }else if(vote >= 5){
+      return "orange"
+  }else{
+      return 'red'
+  }
+}
 
 
 const runMovieDetails = async (movie) => {
