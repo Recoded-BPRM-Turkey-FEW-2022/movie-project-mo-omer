@@ -137,31 +137,27 @@ const renderMovies = (movies) => {
   CONTAINER.innerHTML = "";
 
   const mainMovieDiv = document.createElement("div");
-  mainMovieDiv.classList.add("row");
+  mainMovieDiv.classList.add("row", "row-cols-1", "row-cols-sm-2", "row-cols-md-3", "g-4");
   movies.map((movie) => {
     movie.genre_ids.slice(0, 1).map((genre) => {
       const genreName = genres.find(g => g.id === genre);
       movie.genre = genreName.name;
     })
-    const movieDiv = document.createElement("div");
-    movieDiv.classList.add("col-md-4", "col-sm-6");
-    movieDiv.innerHTML =
-      `
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
-      movieDiv.classList.add("col-md-4", "col-sm-6");
+      movieDiv.classList.add("col");
+      // movieDiv.classList.add("col-sm-6", "col-md-6", "col-lg-4");
       movieDiv.innerHTML =
-        `
-      <div class="card m-3" style="width: 20rem;">
+      `
+      <div class="card shadow-lg">
         <h5 class="card-title genre">${movie.genre}</h5>
         <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
-          <div class="card-body">
+          <div class="card-body text-bg-dark">
             <div class="d-flex justify-content-between">
-             <h5 class="card-title">${movie.title}</h5>
-             <h5 class="card-title">${movie.vote_average}</h5>
+             <h5 class="card-title title">${movie.title}</h5>
+             <h5 class="card-title rating">${movie.vote_average}</h5>
             </div>
             <p class="card-text">${movie.overview}</p>
-            <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
           </div>
       </div>
       `;
@@ -363,10 +359,11 @@ const fetchMoviesByGenre = async () => {
 
 const tagsEl = document.getElementById("tags");
 let selectedGenre = []; // WILL STORE ALL THE CLICKED GENRES. SEE EVENT LISTENER BELOW
+
 const setGenre = () => {
   genres.forEach(genre => { // LOOP OVER THE ARRAY
     const t = document.createElement("div"); // CREATE DIV FOR EACH ARRAY ELEMENT
-    t.classList.add("tag");
+    t.classList.add("tag", "dropdown-item");
     t.id = genre.id; //GET THE id VALUES FROM ARRAY AND GIVE TO DOM ELEMENTS
     t.innerText = genre.name; //GET THE name VALUES FROM ARRAY AND GIVE TO DOM ELEMENTS
     t.addEventListener("click", async () => {
@@ -454,14 +451,15 @@ const fetchActors = async () => {
 // render main page of actors:
 const renderActors = (actors) => {
   const mainActorDiv = document.createElement("div");
-  mainActorDiv.classList.add("row");
+  mainActorDiv.classList.add("row", "row-cols-1", "row-cols-sm-2", "row-cols-md-3", "g-4");
   actors.map((actor) => {
     if (actor.profile_path !== null) {
       const actorDiv = document.createElement("div");
-      actorDiv.classList.add("col-md-4", "col-sm-6");
+      actorDiv.classList.add("col");
+      // actorDiv.classList.add("col-md-4", "col-sm-6");
       actorDiv.innerHTML =
         `
-    <div class="card m-3" style="width: 15rem;">
+    <div class="card">
       <img src="${PROFILE_BASE_URL + actor.profile_path}" alt="${actor.name}">
         <div class="card-body">
           <h5 class="card-title">${actor.name}</h5>
