@@ -11,7 +11,7 @@ const SEARCH_URL = TMDB_BASE_URL + "/search/movie?" + API_KEY;
 const form = document.getElementById("form");
 const submit = document.getElementById("submit");
 
-const genres =  [
+const genres = [
   {
     "id": 28,
     "name": "Action"
@@ -143,10 +143,7 @@ const renderMovies = (movies) => {
       const genreName = genres.find(g => g.id === genre);
       movie.genre = genreName.name;
     })
-    const movieDiv = document.createElement("div");
-    movieDiv.classList.add("col-md-4", "col-sm-6");
-    movieDiv.innerHTML =
-      `
+
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
       movieDiv.classList.add("col-md-4", "col-sm-6");
@@ -205,8 +202,6 @@ const runMovieDetails = async (movie) => {
 
 
 };
-
-
 
 
 
@@ -274,7 +269,7 @@ const renderMovieActors = (actor) => {
   SUBCONTAINER.classList.add("d-flex", "flex-wrap");
   actor.slice(0, 5).map(element => {
     if (element.profile_path !== null) {
-    SUBCONTAINER.innerHTML += `
+      SUBCONTAINER.innerHTML += `
       <div class="pe-3 col-md-4">
              <img style="width: 10rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
              <h4>${element.name}</h4>
@@ -349,11 +344,6 @@ const renderMovie = (movie) => {
     </div>`;
 };
 // ------------------------------------------------- GENRE FUNCTIONS --------------------------------------------------------------//
-const runGenres = async () => {
-  const moviesByGenre = await fetchMoviesByGenre();
-  renderByGenre(moviesByGenre.results);
-};
-
 const fetchMoviesByGenre = async () => {
   const url = `${TMDB_BASE_URL}/discover/movie?sort_by=popularity.desc&with_genres=${encodeURI(selectedGenre.join(','))}&api_key=542003918769df50083a13c415bbc602`
   const res = await fetch(url);
@@ -363,6 +353,8 @@ const fetchMoviesByGenre = async () => {
 
 const tagsEl = document.getElementById("tags");
 let selectedGenre = []; // WILL STORE ALL THE CLICKED GENRES. SEE EVENT LISTENER BELOW
+
+
 const setGenre = () => {
   genres.forEach(genre => { // LOOP OVER THE ARRAY
     const t = document.createElement("div"); // CREATE DIV FOR EACH ARRAY ELEMENT
@@ -385,46 +377,13 @@ const setGenre = () => {
       }
       // console.log(selectedGenre);
       const moviesByGenre = await fetchMoviesByGenre();
-      renderByGenre(moviesByGenre);
-      // console.log(moviesByGenre());
+      console.log("movies by genre", moviesByGenre.results);
+      renderMovies(moviesByGenre.results);
     })
     tagsEl.append(t);
   });
 }
 setGenre();
-
-
-
-const renderByGenre = (moviesByGenre) => {
-  const genreListDiv = document.createElement("div");
-  genreListDiv.classList.add("row");
-  // console.log(moviesByGenre);
-  moviesByGenre.results.map((movieByGenre) => {
-    const genreDiv = document.createElement("div");
-    genreDiv.classList.add("col-md-4", "col-sm-6");
-    genreDiv.innerHTML =
-      `
-      <div class="card m-3" style="width: 20rem;">
-        <img src="${BACKDROP_BASE_URL + movieByGenre.backdrop_path}" alt="${movieByGenre.title} poster">
-          <div class="card-body">
-            <h5 class="card-title">${movieByGenre.title}</h5>
-            <p class="card-text">${movieByGenre.overview}</p>
-            <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-          </div>
-      </div>
-      `;
-
-    genreDiv.addEventListener("click", () => {
-      movieDetails(movieByGenre);
-    });
-    CONTAINER.innerHTML = "";
-    CONTAINER.appendChild(genreListDiv);
-    genreListDiv.appendChild(genreDiv);
-  });
-};
-
-
-
 
 // -------------------------------------------------- creating functions that fetch and display actors --------------------------------------------
 // runs main page for actors: 
@@ -465,7 +424,6 @@ const renderActors = (actors) => {
       <img src="${PROFILE_BASE_URL + actor.profile_path}" alt="${actor.name}">
         <div class="card-body">
           <h5 class="card-title">${actor.name}</h5>
-          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
         </div>
     </div>
     `;
@@ -642,7 +600,7 @@ const renderAboutUs = () => {
            <img id="movie-backdrop" src="./aboutUs.jpg">
       </div>
       <div class="col-lg-8 col-md-12 col-sm-12">
-        <h2 id="actor-name"><span>About Us</span></h2>
+        <h2><span>About Us</span></h2>
         <p>Find everything about your favorite movies, discover new titles through advanced filtering, and more. Powered by The Movie Database, Momerflix is here to help you quickly find your next watch.</p>
       </div>
   </div>`
