@@ -280,7 +280,7 @@ const renderMovieActors = (actor) => {
   SUBCONTAINER.classList.add("d-flex", "mb-4");
   actor.slice(0, 5).map(element => {
     if (element.profile_path !== null) {
-    SUBCONTAINER.innerHTML += `
+      SUBCONTAINER.innerHTML += `
       <div class="card m-auto col-md-4">
              <img style="width: 12rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
              <h4 id="movie-page-actor-names">${element.name}</h4>
@@ -543,7 +543,7 @@ const renderActor2 = (movie) => {
 
     else SUBCONTAINER.innerHTML += `
     <div class="col-md-4 pt-4">
-    <img style="max-width: 60%; height: auto;" src=./images/notAvailable.png>
+    <img style="max-width: 60%; height: auto;" src=./images/notAvailable2.png>
      <h4>${element.original_title}</h4>
      </div>
      `
