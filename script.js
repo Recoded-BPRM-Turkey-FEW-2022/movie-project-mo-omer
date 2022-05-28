@@ -11,7 +11,7 @@ const SEARCH_URL = TMDB_BASE_URL + "/search/movie?" + API_KEY;
 const form = document.getElementById("form");
 const submit = document.getElementById("submit");
 
-const genres =  [
+const genres = [
   {
     "id": 28,
     "name": "Action"
@@ -143,25 +143,24 @@ const renderMovies = (movies) => {
       const genreName = genres.find(g => g.id === genre);
       movie.genre = genreName.name;
     })
+
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
       movieDiv.classList.add("col");
-      // movieDiv.classList.add("col-sm-6", "col-md-6", "col-lg-4");
       movieDiv.innerHTML =
-      `
-      <div class="card shadow-lg">
+        `
+      <div class="card h-100 shadow-lg">
         <h5 class="card-title genre">${movie.genre}</h5>
         <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
           <div class="card-body text-bg-dark">
             <div class="d-flex justify-content-between">
-             <h5 class="card-title title">${movie.title}</h5>
-             <h5 class="card-title rating" style="color: ${getColor(movie.vote_average)}">${movie.vote_average}</h5>
+             <h5 title">${movie.title}</h5>
+             <h5 rating" style="color: ${getColor(movie.vote_average)}">${movie.vote_average}</h5>
             </div>
             <p class="card-text">${movie.overview}</p>
           </div>
       </div>
       `;
-
 
       // console.log(movie);
       movieDiv.addEventListener("click", () => {
@@ -175,12 +174,12 @@ const renderMovies = (movies) => {
 
 // TO COLOR CODE RATINGS ON MOVIES LIST
 function getColor(vote) {
-  if(vote>= 8){
-      return 'greenyellow'
-  }else if(vote >= 5){
-      return "orange"
-  }else{
-      return 'red'
+  if (vote >= 8) {
+    return 'greenyellow'
+  } else if (vote >= 5) {
+    return "orange"
+  } else {
+    return 'red'
   }
 }
 
@@ -204,7 +203,7 @@ const runMovieDetails = async (movie) => {
 
   // Results of fetchProductionCo:
   const productionRes = await fetchProductionCo(movie.id);
-  // console.log(productionRes.production_companies);
+  console.log(productionRes.production_companies);
   renderProdctionCp(productionRes.production_companies);
 
   // Results of fetchSimilarMovies:
@@ -214,8 +213,6 @@ const runMovieDetails = async (movie) => {
 
 
 };
-
-
 
 
 
@@ -296,35 +293,52 @@ const renderMovieActors = (actor) => {
 
 //render similar movies:
 const renderSimilarMovies = (movie) => {
-  CONTAINER.innerHTML += `<br><h3 style="color: white">Similar Movies: <br></h3>`;
+  CONTAINER.innerHTML += `<br><h3>Similar Movies: <br></h3>`;
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
 
   movie.slice(0, 5).map(element => {
     if (element.poster_path !== null) {
-      CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
-             <img class="rounded" style="max-width: 60%; height: auto" src=${PROFILE_BASE_URL + element.poster_path}>
+      SUBCONTAINER.innerHTML += `
+    
+        <div class="col-md-4 col-sm-6">
+             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
+             <h4><span>${element.title}</span></h4>
         </div>
-    </div>
+    
     `;
     }
   })
+  CONTAINER.appendChild(SUBCONTAINER);
+
 }
 
 
 // renders production companies of a movie:
 const renderProdctionCp = (movie) => {
-  CONTAINER.innerHTML += `<br><h3 style="color: white">Production Companies: <br></h3>`;
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
+
+  CONTAINER.innerHTML += `<br><h3>Production Companies: <br></h3>`;
 
   movie.slice(0, 5).map(element => {
-    CONTAINER.innerHTML += `
-    <div class="pt-5 row">
-        <div class="col-md-4">
-             <h4 style="color: white">${element.name}</h4>
+    if (element.logo_path !== null) {
+      SUBCONTAINER.innerHTML += `
+        <div class="col-md-4 pt-4">
+        <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.logo_path}>
+             <h4>${element.name}</h4>
         </div>
-    </div>
+    `;
+    } else
+      SUBCONTAINER.innerHTML += `
+      <div class="col-md-4 pt-4">
+      <img style="max-width: 60%; height: auto;" src="./images/notAvailable.png">
+           <h4>${element.name}</h4>
+      </div>
     `;
   })
+  CONTAINER.appendChild(SUBCONTAINER);
+
 }
 
 
@@ -365,11 +379,6 @@ const renderMovie = (movie) => {
   `;
 };
 // ------------------------------------------------- GENRE FUNCTIONS --------------------------------------------------------------//
-const runGenres = async () => {
-  const moviesByGenre = await fetchMoviesByGenre();
-  renderByGenre(moviesByGenre.results);
-};
-
 const fetchMoviesByGenre = async () => {
   const url = `${TMDB_BASE_URL}/discover/movie?sort_by=popularity.desc&with_genres=${encodeURI(selectedGenre.join(','))}&api_key=542003918769df50083a13c415bbc602`
   const res = await fetch(url);
@@ -402,46 +411,13 @@ const setGenre = () => {
       }
       // console.log(selectedGenre);
       const moviesByGenre = await fetchMoviesByGenre();
-      renderByGenre(moviesByGenre);
-      // console.log(moviesByGenre());
+      console.log("movies by genre", moviesByGenre.results);
+      renderMovies(moviesByGenre.results);
     })
     tagsEl.append(t);
   });
 }
 setGenre();
-
-
-
-const renderByGenre = (moviesByGenre) => {
-  const genreListDiv = document.createElement("div");
-  genreListDiv.classList.add("row");
-  // console.log(moviesByGenre);
-  moviesByGenre.results.map((movieByGenre) => {
-    const genreDiv = document.createElement("div");
-    genreDiv.classList.add("col-md-4", "col-sm-6");
-    genreDiv.innerHTML =
-      `
-      <div class="card m-3" style="width: 20rem;">
-        <img src="${BACKDROP_BASE_URL + movieByGenre.backdrop_path}" alt="${movieByGenre.title} poster">
-          <div class="card-body">
-            <h5 class="card-title">${movieByGenre.title}</h5>
-            <p class="card-text">${movieByGenre.overview}</p>
-            <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
-          </div>
-      </div>
-      `;
-
-    genreDiv.addEventListener("click", () => {
-      movieDetails(movieByGenre);
-    });
-    CONTAINER.innerHTML = "";
-    CONTAINER.appendChild(genreListDiv);
-    genreListDiv.appendChild(genreDiv);
-  });
-};
-
-
-
 
 // -------------------------------------------------- creating functions that fetch and display actors --------------------------------------------
 // runs main page for actors: 
@@ -449,12 +425,6 @@ const runActors = async () => {
   const actors = await fetchActors();
   // console.log("actors", actors);
   renderActors(actors.results);
-
-  // delete this
-  //this is to render fetch2:
-  // const movieCast = await fetch2();
-  // renderActor2(movieCast);
-
 };
 
 
@@ -559,19 +529,29 @@ const renderActor = (actor) => {
 // renders movies an actor played in :
 const renderActor2 = (movie) => {
   CONTAINER.innerHTML += `<br><h3>Related Movies: <br></h3>`;
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
 
-  movie.slice(0, 8).map(element => {
-    // console.log(element)
-    CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
-             <img class="rounded" style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
-             <h4><span>${element.original_title}</span></h4>
-        </div>
-    </div>`
+  movie.slice(0, 6).map(element => {
+    if (element.poster_path !== null) {
+      // console.log(element)
+      SUBCONTAINER.innerHTML += `
+      <div class="col-md-4 pt-4">
+           <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
+           <h4>${element.original_title}</h4>
+      </div>`}
+
+    else SUBCONTAINER.innerHTML += `
+    <div class="col-md-4 pt-4">
+    <img style="max-width: 60%; height: auto;" src=./images/notAvailable.png>
+     <h4>${element.original_title}</h4>
+     </div>
+     `
   })
+  CONTAINER.appendChild(SUBCONTAINER);
 
 };
+
 
 // ------------------------------------------------------------------ Event Listeners ------------------------------------------------------------
 
@@ -660,8 +640,7 @@ const renderAboutUs = () => {
         <h2 id="about-us-title">About MODB</h2>
         <p class="about-us-p">Find everything about your favorite movies, discover new titles through advanced filtering, and more. Powered by The Movie Database, MODB is here to help you quickly find your next watch.</p>
       </div>
-
-  `
+    `
 }
 
 aboutUsBtn.addEventListener("click", () => {
