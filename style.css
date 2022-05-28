@@ -20,6 +20,10 @@ body {
 }
 
 #submitBtn {
+    border-color: rgba(0, 93, 112, 1);
+}
+
+#submitBtn {
     color: white;
     font-size: 18px;
 }
@@ -171,3 +175,7 @@ body {
     height: 100%;
   }
   
+  #biography {
+      width: 60%;
+      font-weight: 300;
+  }
