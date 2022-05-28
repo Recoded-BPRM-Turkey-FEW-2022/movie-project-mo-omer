@@ -277,11 +277,11 @@ const renderVideos = (movie) => {
 // renders actors starring in a movie
 const renderMovieActors = (actor) => {
   const SUBCONTAINER = document.createElement("div");
-  SUBCONTAINER.classList.add("d-flex", "mb-4");
+  SUBCONTAINER.classList.add("d-flex", "mb-4", "flex-wrap");
   actor.slice(0, 5).map(element => {
     if (element.profile_path !== null) {
-      SUBCONTAINER.innerHTML += `
-      <div class="card m-auto col-md-4">
+    SUBCONTAINER.innerHTML += `
+      <div class="card m-auto mb-sm-3">
              <img style="width: 12rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
              <h4 id="movie-page-actor-names">${element.name}</h4>
       </div>
@@ -301,9 +301,8 @@ const renderSimilarMovies = (movie) => {
     if (element.poster_path !== null) {
       SUBCONTAINER.innerHTML += `
     
-        <div class="col-md-4 col-sm-6">
-             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
-             <h4><span>${element.title}</span></h4>
+        <div class="col-md-4 col-sm-6 mb-sm-3">
+             <img class="rounded" style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
         </div>
     
     `;
@@ -325,14 +324,14 @@ const renderProdctionCp = (movie) => {
     if (element.logo_path !== null) {
       SUBCONTAINER.innerHTML += `
         <div class="col-md-4 pt-4">
-        <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.logo_path}>
+        <img class="rounded" style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.logo_path}>
              <h4>${element.name}</h4>
         </div>
     `;
     } else
       SUBCONTAINER.innerHTML += `
       <div class="col-md-4 pt-4">
-      <img style="max-width: 60%; height: auto;" src="./images/notAvailable.png">
+      <img class="rounded" style="max-width: 60%; height: auto;" src="./images/notAvailable.png">
            <h4>${element.name}</h4>
       </div>
     `;
@@ -507,8 +506,8 @@ const renderActor = (actor) => {
         <div class="col-md-4">
              <img class="rounded" id="movie-backdrop" src=${PROFILE_BASE_URL + actor.profile_path}>
         </div>
-        <div class="col-lg-8 col-md-12 col-sm-12">
-          <h2 id="actor-name"><span>${actor.name}</span></h2>
+        <div style="color: white" class="col-lg-8 col-md-12 col-sm-12">
+          <h2 style="font-size: 52px" id="actor-name">${actor.name}</h2>
           <h4>Gender:</h4>
           <p id="gender">**</p>
           <h4>Popularity:</h4>
@@ -516,7 +515,7 @@ const renderActor = (actor) => {
           <h4>Birthday: </h4>
           <p id="birthday">${actor.birthday}</p>
           <h4>Biography:</h4>
-           <h5 id="biography" style="color:#BDBDBD; font-size: .8rem;">${actor.biography}</h5>
+           <h5 id="biography">${actor.biography}</h5>
         </div>
     </div>`
   if (actor.gender === 2) {
@@ -528,7 +527,7 @@ const renderActor = (actor) => {
 
 // renders movies an actor played in :
 const renderActor2 = (movie) => {
-  CONTAINER.innerHTML += `<br><h3>Related Movies: <br></h3>`;
+  CONTAINER.innerHTML += `<br><h3 style="color: white">Related Movies: <br></h3>`;
   const SUBCONTAINER = document.createElement("div");
   SUBCONTAINER.classList.add("d-flex", "flex-wrap");
 
@@ -536,14 +535,14 @@ const renderActor2 = (movie) => {
     if (element.poster_path !== null) {
       // console.log(element)
       SUBCONTAINER.innerHTML += `
-      <div class="col-md-4 pt-4">
-           <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
-           <h4>${element.original_title}</h4>
+      <div class="col-md-4 pt-4" style="color: white">
+           <img class="rounded" style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
       </div>`}
 
     else SUBCONTAINER.innerHTML += `
-    <div class="col-md-4 pt-4">
-    <img style="max-width: 60%; height: auto;" src=./images/notAvailable2.png>
+
+    <div class="col-md-4 pt-4" style="color: white">
+    <img class="rounded" style="max-width: 60%; height: auto;" src=./images/notAvailable2.png>
      <h4>${element.original_title}</h4>
      </div>
      `
