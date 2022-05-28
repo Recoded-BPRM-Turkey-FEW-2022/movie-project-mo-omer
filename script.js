@@ -540,8 +540,9 @@ const renderActor2 = (movie) => {
       </div>`}
 
     else SUBCONTAINER.innerHTML += `
+
     <div class="col-md-4 pt-4" style="color: white">
-    <img class="rounded" style="max-width: 60%; height: auto;" src=./images/notAvailable.png>
+    <img class="rounded" style="max-width: 60%; height: auto;" src=./images/notAvailable2.png>
      <h4>${element.original_title}</h4>
      </div>
      `
