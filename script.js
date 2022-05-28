@@ -172,6 +172,7 @@ const renderMovies = (movies) => {
   });
 };
 
+// TO COLOR CODE RATINGS ON MOVIES LIST
 function getColor(vote) {
   if (vote >= 8) {
     return 'greenyellow'
@@ -181,6 +182,8 @@ function getColor(vote) {
     return 'red'
   }
 }
+
+// -------------------------------- MOVIE DETAIL PAGE --------------------------------------------
 
 
 const runMovieDetails = async (movie) => {
@@ -255,14 +258,14 @@ const fetchProductionCo = async (movieId) => {
 
 // from fetch3 (called it render3): renders trailer of a movie.
 const renderVideos = (movie) => {
-  CONTAINER.innerHTML += `<br><h3>Trailer: <br></h3>`;
+  CONTAINER.innerHTML += `<br><h3 style="color: white">Trailer: <br></h3>`;
   let i = 0;
   movie.map(element => {
     if (element.type === "Trailer" & i < 1) {
       i++;
       CONTAINER.innerHTML += `
-        <div>
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/${element.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+        <div class="videoWrapper mt-4">
+          <iframe class="rounded" width="560" height="315" src="https://www.youtube.com/embed/${element.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
         </div>
   `;
     }
@@ -274,13 +277,13 @@ const renderVideos = (movie) => {
 // renders actors starring in a movie
 const renderMovieActors = (actor) => {
   const SUBCONTAINER = document.createElement("div");
-  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
+  SUBCONTAINER.classList.add("d-flex", "mb-4");
   actor.slice(0, 5).map(element => {
     if (element.profile_path !== null) {
-      SUBCONTAINER.innerHTML += `
-      <div class="pe-3 col-md-4">
-             <img style="width: 10rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
-             <h4>${element.name}</h4>
+    SUBCONTAINER.innerHTML += `
+      <div class="card m-auto col-md-4">
+             <img style="width: 12rem; height: auto;" src=${PROFILE_BASE_URL + element.profile_path}>
+             <h4 id="movie-page-actor-names">${element.name}</h4>
       </div>
     `;
     }
@@ -346,26 +349,34 @@ const renderMovie = (movie) => {
     arrOfGenres.push(element.name);
   })
   CONTAINER.innerHTML = `
-    <div class=" row pt-5">
-        <div class="col-md-4">
-             <img id="movie-backdrop" src=${BACKDROP_BASE_URL + movie.backdrop_path}>
+      <div class="mt-4 d-flex  justify-content-between flex-title-rating-voteCount">
+        <div class="flex-title">
+          <h1 id="movie-title">${movie.title}</h2>
         </div>
-        <div class="col-md-8 ">
-            <h2 id="movie-title">${movie.title}</h2>
-            <h4>${arrOfGenres.join(', ')}</h4>
-            <p id="movie-release-date"><b>Release Date:</b> ${movie.release_date}</p>
-            <p id="movie-runtime"><b>Runtime:</b> ${movie.runtime} Minutes</p> 
-            <p id="movie-runtime"><b>Language:</b> ${movie.spoken_languages[0].english_name}</p>
-            <p id="movie-runtime"><b>Vote Average:</b> ${movie.vote_average}/10</p>
-            <p id="movie-runtime"><b>Vote Count:</b> ${movie.vote_count}</p>
-
-            <h3>Overview:</h3>
-            <p id="movie-overview">${movie.overview}</p>
+        <div class="d-flex align-items-end mb-2 flex-rating-voteCount">
+        <div>
+          <span id="movie-vote-average" style="color: ${getColor(movie.vote_average)}" class="me-2">${movie.vote_average}/10</span>
+          <span id="movie-vote-count" class="ms-2">${movie.vote_count} votes</span>
         </div>
         </div>
-            <h3>Actors:</h3>
-            
-    </div>`;
+      </div>
+      <div class="parent">
+        <div class="div1">
+          <img class="rounded" id="movie-backdrop" src=${BACKDROP_BASE_URL + movie.backdrop_path}>
+        </div>
+        <div class="div2"> 
+        <h4>${arrOfGenres.join(', ')}</h4>
+        <p id="movie-runtime"><b>Language:</b> ${movie.spoken_languages[0].english_name}</p>
+        </div>
+        <div class="div3">
+        <p id="movie-release-date">${movie.release_date}</p>
+        <p id="movie-runtime">${movie.runtime} Minutes</p> 
+        </div>
+        <div class="div4">
+          <p id="movie-overview">${movie.overview}</p>
+        </div>
+    </div>
+  `;
 };
 // ------------------------------------------------- GENRE FUNCTIONS --------------------------------------------------------------//
 const fetchMoviesByGenre = async () => {
@@ -494,7 +505,7 @@ const renderActor = (actor) => {
   CONTAINER.innerHTML = `
     <div class="pt-5 row ">
         <div class="col-md-4">
-             <img id="movie-backdrop" src=${PROFILE_BASE_URL + actor.profile_path}>
+             <img class="rounded" id="movie-backdrop" src=${PROFILE_BASE_URL + actor.profile_path}>
         </div>
         <div class="col-lg-8 col-md-12 col-sm-12">
           <h2 id="actor-name"><span>${actor.name}</span></h2>
@@ -620,18 +631,16 @@ document.addEventListener("DOMContentLoaded", autorun);
 // ------------------------------------------------------About us page ---------------------------------------------------------------------
 
 const aboutUsBtn = document.getElementById("about-us");
-
 const renderAboutUs = () => {
+  CONTAINER.setAttribute("style", "min-height: 100vh");
+  CONTAINER.className = "about-us-container";
   CONTAINER.innerHTML = `
-  <div class="pt-5 row ">
-      <div class="col-md-4">
-           <img id="movie-backdrop" src="./aboutUs.jpg">
+      <div id="background-image"></div>
+      <div id="about-us-text" class="col-lg-8 col-md-12 col-sm-12">
+        <h2 id="about-us-title">About MODB</h2>
+        <p class="about-us-p">Find everything about your favorite movies, discover new titles through advanced filtering, and more. Powered by The Movie Database, MODB is here to help you quickly find your next watch.</p>
       </div>
-      <div class="col-lg-8 col-md-12 col-sm-12">
-        <h2><span>About Us</span></h2>
-        <p>Find everything about your favorite movies, discover new titles through advanced filtering, and more. Powered by The Movie Database, Momerflix is here to help you quickly find your next watch.</p>
-      </div>
-  </div>`
+    `
 }
 
 aboutUsBtn.addEventListener("click", () => {
