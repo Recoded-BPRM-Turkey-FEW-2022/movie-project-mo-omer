@@ -143,25 +143,24 @@ const renderMovies = (movies) => {
       const genreName = genres.find(g => g.id === genre);
       movie.genre = genreName.name;
     })
-    
+
     if (movie.poster_path !== null) {
       const movieDiv = document.createElement("div");
       movieDiv.classList.add("col");
       movieDiv.innerHTML =
-      `
-      <div class="card shadow-lg">
+        `
+      <div class="card h-100 shadow-lg">
         <h5 class="card-title genre">${movie.genre}</h5>
         <img src="${BACKDROP_BASE_URL + movie.poster_path}" alt="${movie.title} poster">
           <div class="card-body text-bg-dark">
             <div class="d-flex justify-content-between">
-             <h5 class="card-title title">${movie.title}</h5>
-             <h5 class="card-title rating" style="color: ${getColor(movie.vote_average)}">${movie.vote_average}</h5>
+             <h5 title">${movie.title}</h5>
+             <h5 rating" style="color: ${getColor(movie.vote_average)}">${movie.vote_average}</h5>
             </div>
             <p class="card-text">${movie.overview}</p>
           </div>
       </div>
       `;
-
 
       // console.log(movie);
       movieDiv.addEventListener("click", () => {
@@ -174,12 +173,12 @@ const renderMovies = (movies) => {
 };
 
 function getColor(vote) {
-  if(vote>= 8){
-      return 'greenyellow'
-  }else if(vote >= 5){
-      return "orange"
-  }else{
-      return 'red'
+  if (vote >= 8) {
+    return 'greenyellow'
+  } else if (vote >= 5) {
+    return "orange"
+  } else {
+    return 'red'
   }
 }
 
@@ -201,7 +200,7 @@ const runMovieDetails = async (movie) => {
 
   // Results of fetchProductionCo:
   const productionRes = await fetchProductionCo(movie.id);
-  // console.log(productionRes.production_companies);
+  console.log(productionRes.production_companies);
   renderProdctionCp(productionRes.production_companies);
 
   // Results of fetchSimilarMovies:
@@ -292,35 +291,51 @@ const renderMovieActors = (actor) => {
 //render similar movies:
 const renderSimilarMovies = (movie) => {
   CONTAINER.innerHTML += `<br><h3>Similar Movies: <br></h3>`;
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
 
   movie.slice(0, 5).map(element => {
     if (element.poster_path !== null) {
-      CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
+      SUBCONTAINER.innerHTML += `
+    
+        <div class="col-md-4 col-sm-6">
              <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
              <h4><span>${element.title}</span></h4>
         </div>
-    </div>
+    
     `;
     }
   })
+  CONTAINER.appendChild(SUBCONTAINER);
+
 }
 
 
 // renders production companies of a movie:
 const renderProdctionCp = (movie) => {
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
+
   CONTAINER.innerHTML += `<br><h3>Production Companies: <br></h3>`;
 
   movie.slice(0, 5).map(element => {
-    CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
-             <h4><span>${element.name}</span></h4>
+    if (element.logo_path !== null) {
+      SUBCONTAINER.innerHTML += `
+        <div class="col-md-4 pt-4">
+        <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.logo_path}>
+             <h4>${element.name}</h4>
         </div>
-    </div>
+    `;
+    } else
+      SUBCONTAINER.innerHTML += `
+      <div class="col-md-4 pt-4">
+      <img style="max-width: 60%; height: auto;" src="./images/notAvailable.png">
+           <h4>${element.name}</h4>
+      </div>
     `;
   })
+  CONTAINER.appendChild(SUBCONTAINER);
+
 }
 
 
@@ -399,12 +414,6 @@ const runActors = async () => {
   const actors = await fetchActors();
   // console.log("actors", actors);
   renderActors(actors.results);
-
-  // delete this
-  //this is to render fetch2:
-  // const movieCast = await fetch2();
-  // renderActor2(movieCast);
-
 };
 
 
@@ -509,19 +518,29 @@ const renderActor = (actor) => {
 // renders movies an actor played in :
 const renderActor2 = (movie) => {
   CONTAINER.innerHTML += `<br><h3>Related Movies: <br></h3>`;
+  const SUBCONTAINER = document.createElement("div");
+  SUBCONTAINER.classList.add("d-flex", "flex-wrap");
 
-  movie.slice(0, 8).map(element => {
-    // console.log(element)
-    CONTAINER.innerHTML += `
-    <div class="pt-5 row ">
-        <div class="col-md-4">
-             <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
-             <h4><span>${element.original_title}</span></h4>
-        </div>
-    </div>`
+  movie.slice(0, 6).map(element => {
+    if (element.poster_path !== null) {
+      // console.log(element)
+      SUBCONTAINER.innerHTML += `
+      <div class="col-md-4 pt-4">
+           <img style="max-width: 60%; height: auto;" src=${PROFILE_BASE_URL + element.poster_path}>
+           <h4>${element.original_title}</h4>
+      </div>`}
+
+    else SUBCONTAINER.innerHTML += `
+    <div class="col-md-4 pt-4">
+    <img style="max-width: 60%; height: auto;" src=./images/notAvailable.png>
+     <h4>${element.original_title}</h4>
+     </div>
+     `
   })
+  CONTAINER.appendChild(SUBCONTAINER);
 
 };
+
 
 // ------------------------------------------------------------------ Event Listeners ------------------------------------------------------------
 
